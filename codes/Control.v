@@ -9,7 +9,7 @@ module Control
     ALUSrc_o   ,
     Branch_o   
 );
-
+// just testing
 // Interface
 input   [6:0]      Op_i;
 output             RegWrite_o;
