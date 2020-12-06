@@ -43,7 +43,10 @@ initial begin
     // [RegisterInitialization] DO NOT REMOVE THIS FLAG !!!
 
     // TODO: initialize your pipeline registers
-
+    CPU.IF_ID.data_o = 0;
+    CPU.ID_EX.data_o = 0;
+    CPU.EX_MEM.data_o = 0;
+    CPU.MEM_WB.data_o = 0;
     
     // Load instructions into instruction memory
     // Make sure you change back to "instruction.txt" before submission
@@ -53,6 +56,10 @@ initial begin
     // Make sure you change back to "output.txt" before submission
     outfile = $fopen("output.txt") | 1;
     
+    $fdisplay(outfile, "Pipeline Register IF_ID: %b", CPU.IF_ID.data_o);
+    $fdisplay(outfile, "Pipeline Register ID_EX: %b", CPU.ID_EX.data_o);
+    $fdisplay(outfile, "Pipeline Register EX_MEM: %b", CPU.EX_MEM.data_o);
+    $fdisplay(outfile, "Pipeline Register MEM_WB: %b", CPU.MEM_WB.data_o);
     Clk = 1;
     Reset = 1;
     Start = 0;
@@ -100,7 +107,12 @@ always@(posedge Clk) begin
     $fdisplay(outfile, "Data Memory: 0x1C = %10d", CPU.Data_Memory.memory[7]);
 
     $fdisplay(outfile, "\n");
-    
+    $fdisplay(outfile, "Pipeline Register IF_ID: %b", CPU.IF_ID.data_o);
+    $fdisplay(outfile, "Pipeline Register ID_EX: %b", CPU.ID_EX.data_o);
+    $fdisplay(outfile, "Pipeline Register EX_MEM: %b", CPU.EX_MEM.data_o);
+    $fdisplay(outfile, "Pipeline Register MEM_WB: %b", CPU.MEM_WB.data_o);
+
+
     counter = counter + 1;
     
       
