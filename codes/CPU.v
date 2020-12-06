@@ -17,7 +17,7 @@ wire [31:0] ins, ins_ID, ins_EX, ins_MEM, ins_WB;
 wire [1:0] ALUOp, ALUOp_EX;
 wire RegWrite, RegWrite_EX, Registers_MEM, RegWrite_WB;
 wire ALUSrc, ALUSrc_EX;
-wire [31:0] sign_extend_wire, sign_extend_wire_EX;
+wire [31:0] imm_gen_wire, imm_gen_wire_EX;
 wire [31:0] read_data1, read_data1_EX;
 wire [31:0] read_data2, read_data2_EX, read_data2_MEM;
 wire [31:0] mux_wire;
@@ -41,8 +41,8 @@ Pipeline_Register #(.n(32)) IF_ID (
 
 Pipeline_Register #(.n(118)) ID_EX (
     .clk_i     (clk_i),
-    .data_i     ({RegWrite, MemtoReg, MemRead, MemWrite, ALUOp, ALUSrc, read_data1, read_data2, sign_extend_wire, {ins_ID[31:25], ins_ID[14:12]}, ins_ID[11:7]}),
-    .data_o     ({RegWrite_EX, MemtoReg_EX, MemRead_EX, MemWrite_EX, ALUOp_EX, ALUSrc_EX, read_data1_EX, read_data2_EX, sign_extend_wire_EX, {ins_EX[31:25], ins_EX[14:12]}, ins_EX[11:7]})
+    .data_i     ({RegWrite, MemtoReg, MemRead, MemWrite, ALUOp, ALUSrc, read_data1, read_data2, imm_gen_wire, {ins_ID[31:25], ins_ID[14:12]}, ins_ID[11:7]}),
+    .data_o     ({RegWrite_EX, MemtoReg_EX, MemRead_EX, MemWrite_EX, ALUOp_EX, ALUSrc_EX, read_data1_EX, read_data2_EX, imm_gen_wire_EX, {ins_EX[31:25], ins_EX[14:12]}, ins_EX[11:7]})
 );
 Pipeline_Register #(.n(73)) EX_MEM (
     .clk_i     (clk_i),
@@ -103,7 +103,7 @@ Registers Registers(
 
 MUX32 MUX_ALUSrc(
     .data1_i    (read_data2_EX),
-    .data2_i    (sign_extend_wire_EX),
+    .data2_i    (imm_gen_wire_EX),
     .select_i   (ALUSrc_EX),
     .data_o     (mux_wire)
 );
@@ -115,9 +115,9 @@ MUX32 REG_WRISrc(
     .data_o     (write_register)
 );
 
-Sign_Extend Sign_Extend(
-    .data_i     (ins_ID[31:20]),
-    .data_o     (sign_extend_wire)
+Imm_Gen Imm_Gen(
+    .data_i     (ins_ID[31:0]),
+    .data_o     (imm_gen_wire)
 );
 
   
