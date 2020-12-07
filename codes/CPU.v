@@ -33,16 +33,19 @@ wire [31:0] data_memory_output, data_memory_output_WB;
 wire [31:0] write_register;
 wire Branch;
 
+//Forwarding
+wire [1:0] Forward_A , Forward_B;
+wire [31:0] MUX_ForwardA_out , MUX_ForwardB_out;
 Pipeline_Register #(.n(32)) IF_ID (
     .clk_i     (clk_i),
     .data_i     (ins),
     .data_o     (ins_ID)
 );
 
-Pipeline_Register #(.n(118)) ID_EX (
+Pipeline_Register #(.n(128)) ID_EX (
     .clk_i     (clk_i),
-    .data_i     ({RegWrite, MemtoReg, MemRead, MemWrite, ALUOp, ALUSrc, read_data1, read_data2, imm_gen_wire, {ins_ID[31:25], ins_ID[14:12]}, ins_ID[11:7]}),
-    .data_o     ({RegWrite_EX, MemtoReg_EX, MemRead_EX, MemWrite_EX, ALUOp_EX, ALUSrc_EX, read_data1_EX, read_data2_EX, imm_gen_wire_EX, {ins_EX[31:25], ins_EX[14:12]}, ins_EX[11:7]})
+    .data_i     ({RegWrite, MemtoReg, MemRead, MemWrite, ALUOp, ALUSrc, read_data1, read_data2, imm_gen_wire, {ins_ID[31:25], ins_ID[14:12]} , ins_ID[19:15] , ins_ID[24:20], ins_ID[11:7]}),
+    .data_o     ({RegWrite_EX, MemtoReg_EX, MemRead_EX, MemWrite_EX, ALUOp_EX, ALUSrc_EX, read_data1_EX, read_data2_EX, imm_gen_wire_EX, {ins_EX[31:25], ins_EX[14:12]}, ins_EX[19:15] , ins_EX[24:20] , ins_EX[11:7]})
 );
 Pipeline_Register #(.n(73)) EX_MEM (
     .clk_i     (clk_i),
@@ -100,12 +103,39 @@ Registers Registers(
     .RS2data_o   (read_data2) 
 );
 
+MUX_Forwarding MUX_ForwardA(
+    .data00_i (read_data1_EX),
+    .data01_i (write_register),
+    .data10_i (ALU_result_MEM),
+    .Forward_i (Forward_A),
+    .data_o (MUX_ForwardA_out)
+);
+
+MUX_Forwarding MUX_ForwardB(
+    .data00_i (read_data2_EX),
+    .data01_i (write_register),
+    .data10_i (ALU_result_MEM),
+    .Forward_i (Forward_B),
+    .data_o (MUX_ForwardB_out)
+);
 
 MUX32 MUX_ALUSrc(
-    .data1_i    (read_data2_EX),
+    .data1_i    (MUX_ForwardB_out),
     .data2_i    (imm_gen_wire_EX),
     .select_i   (ALUSrc_EX),
     .data_o     (mux_wire)
+);
+
+Forwarding_Unit Forwarding_Unit(
+    .clk_i (clk_i),
+    .EX_rs1_i (ins_EX[19:15]),
+    .EX_rs2_i (ins_EX[24:20]),
+    .MEM_RegWrite_i (RegWrite_MEM),
+    .MEM_Rd_i (ins_MEM[11:7]),
+    .WB_RegWrite_i (RegWrite_WB),
+    .WB_Rd_i (ins_WB[11:7]),
+    .ForwardA_o (Forward_A),
+    .ForwardB_o (Forward_B)
 );
 
 MUX32 REG_WRISrc(
@@ -123,7 +153,7 @@ Imm_Gen Imm_Gen(
   
 
 ALU ALU(
-    .data1_i    (read_data1_EX),
+    .data1_i    (MUX_ForwardA_out),
     .data2_i    (mux_wire),
     .ALUCtrl_i  (ALU_control_wire),
     .data_o     (ALU_result),
