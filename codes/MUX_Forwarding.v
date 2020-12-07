@@ -12,9 +12,10 @@ module MUX_Forwarding(
 input [31:0] data00_i , data01_i , data10_i;
 input [1:0] Forward_i;
 output [31:0] data_o;
+
 reg [31:0] data_o;
 
-always @(data00_i or data01_i or data10_i or Forward_i) begin
+always @(*) begin
     case (Forward_i)
         `ID_EX:  data_o = data00_i;
         `EX_MEM:  data_o = data10_i;
