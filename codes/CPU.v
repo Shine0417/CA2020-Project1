@@ -49,7 +49,7 @@ Pipeline_Register #(.n(135)) ID_EX (
 );
 Pipeline_Register #(.n(100)) EX_MEM (
     .clk_i     (clk_i),
-    .data_i     ({RegWrite_EX, MemtoReg_EX, MemRead_EX, MemWrite_EX, ALU_result, read_data2_EX, ins_EX}),
+    .data_i     ({RegWrite_EX, MemtoReg_EX, MemRead_EX, MemWrite_EX, ALU_result, MUX_ForwardB_out, ins_EX}),
     .data_o     ({RegWrite_MEM, MemtoReg_MEM, MemRead_MEM, MemWrite_MEM, ALU_result_MEM, read_data2_MEM, ins_MEM})
 );
 Pipeline_Register #(.n(98)) MEM_WB (
