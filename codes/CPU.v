@@ -38,22 +38,26 @@ wire [1:0] Forward_A , Forward_B;
 wire [31:0] MUX_ForwardA_out , MUX_ForwardB_out;
 Pipeline_Register #(.n(32)) IF_ID (
     .clk_i     (clk_i),
+    .start_i    (start_i),
     .data_i     (ins),
     .data_o     (ins_ID)
 );
 
 Pipeline_Register #(.n(135)) ID_EX (
     .clk_i     (clk_i),
+    .start_i    (start_i),
     .data_i     ({RegWrite, MemtoReg, MemRead, MemWrite, ALUOp, ALUSrc, read_data1, read_data2, imm_gen_wire, ins_ID}),
     .data_o     ({RegWrite_EX, MemtoReg_EX, MemRead_EX, MemWrite_EX, ALUOp_EX, ALUSrc_EX, read_data1_EX, read_data2_EX, imm_gen_wire_EX, ins_EX})
 );
 Pipeline_Register #(.n(100)) EX_MEM (
     .clk_i     (clk_i),
+    .start_i    (start_i),
     .data_i     ({RegWrite_EX, MemtoReg_EX, MemRead_EX, MemWrite_EX, ALU_result, MUX_ForwardB_out, ins_EX}),
     .data_o     ({RegWrite_MEM, MemtoReg_MEM, MemRead_MEM, MemWrite_MEM, ALU_result_MEM, read_data2_MEM, ins_MEM})
 );
 Pipeline_Register #(.n(98)) MEM_WB (
     .clk_i      (clk_i),
+    .start_i    (start_i),
     .data_i     ({RegWrite_MEM, MemtoReg_MEM, ALU_result_MEM, data_memory_output, ins_MEM}),
     .data_o     ({RegWrite_WB, MemtoReg_WB, ALU_result_WB, data_memory_output_WB, ins_WB})
 );
