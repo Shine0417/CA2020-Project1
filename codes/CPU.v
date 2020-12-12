@@ -49,6 +49,7 @@ wire 		Flush;
 
 Pipeline_Register #(.n(32)) IF_ID (
     .clk_i      (clk_i),
+    .start_i	(start_i),
     .stall_i	(Stall),
     .flush_i	(Flush),
     .pc_i 		(address),
@@ -60,7 +61,8 @@ Pipeline_Register #(.n(32)) IF_ID (
 
 Pipeline_Register #(.n(118)) ID_EX (
     .clk_i      (clk_i),
-    .stall_i 	(1'bx), 
+    .start_i	(start_i),
+    .stall_i 	(1'bx),
     .flush_i 	(1'bx),
     .pc_i 		(32'bx),
     .data_i     ({RegWrite, MemtoReg, MemRead, MemWrite, ALUOp, ALUSrc, read_data1, read_data2, imm_gen_wire, {ins_ID[31:25], ins_ID[14:12]}, ins_ID[11:7]}),
@@ -70,6 +72,7 @@ Pipeline_Register #(.n(118)) ID_EX (
 
 Pipeline_Register #(.n(73)) EX_MEM (
     .clk_i      (clk_i),
+    .start_i	(start_i),
     .stall_i 	(1'bx), 
     .flush_i 	(1'bx),
     .pc_i 		(32'bx),
@@ -80,6 +83,7 @@ Pipeline_Register #(.n(73)) EX_MEM (
 
 Pipeline_Register #(.n(71)) MEM_WB (
     .clk_i      (clk_i),
+    .start_i	(start_i),
     .stall_i 	(1'bx), 
     .flush_i 	(1'bx),
     .pc_i 		(32'bx),

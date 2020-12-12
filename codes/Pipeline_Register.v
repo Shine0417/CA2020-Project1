@@ -19,9 +19,8 @@ output [n-1:0]	data_o;
 output [ 31:0]  pc_o;
 
 reg    [n-1:0]	data_o;
+reg    [ 31:0]	pc_o;
 parameter n = 1;
-
-assign pc_o = pc_i;
 
 always @(posedge start_i) begin
    data_o <= 0; 
@@ -33,5 +32,6 @@ always @(posedge clk_i) begin
 	else
    		data_o <= data_i;
 
+   	pc_o <= pc_i;
 end
 endmodule
