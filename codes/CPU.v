@@ -35,13 +35,16 @@ wire MemWrite, MemWrite_EX, MemWrite_MEM;
 wire [31:0] data_memory_output, data_memory_output_WB;
 wire [31:0] write_register;
 
+//Forwarding
+wire [1:0] Forward_A , Forward_B;
+wire [31:0] MUX_ForwardA_out , MUX_ForwardB_out;
+
 wire 		Branch;
 wire 		RS1eqRS2;
 wire		PCWrite;
 wire 		Stall;
 wire 		NoOp;
 wire 		Flush;
-
 
 
 Pipeline_Register #(.n(32)) IF_ID (
@@ -53,6 +56,7 @@ Pipeline_Register #(.n(32)) IF_ID (
     .pc_o 		(address_ID),
     .data_o     (ins_ID)
 );
+
 
 Pipeline_Register #(.n(118)) ID_EX (
     .clk_i      (clk_i),
@@ -82,7 +86,6 @@ Pipeline_Register #(.n(71)) MEM_WB (
     .data_i     ({RegWrite_MEM, MemtoReg_MEM, ALU_result_MEM, data_memory_output, ins_MEM[11:7]}),
     .pc_o 		(),
     .data_o     ({RegWrite_WB, MemtoReg_WB, ALU_result_WB, data_memory_output_WB, ins_WB[11:7]})
-);
 
 
 Control Control(
@@ -131,12 +134,40 @@ Registers Registers(
     .RS2data_o   (read_data2) 
 );
 
+MUX_Forwarding MUX_ForwardA(
+    .data00_i (read_data1_EX),
+    .data01_i (write_register),
+    .data10_i (ALU_result_MEM),
+    .Forward_i (Forward_A),
+    .data_o (MUX_ForwardA_out)
+);
+
+MUX_Forwarding MUX_ForwardB(
+    .data00_i (read_data2_EX),
+    .data01_i (write_register),
+    .data10_i (ALU_result_MEM),
+    .Forward_i (Forward_B),
+    .data_o (MUX_ForwardB_out)
+);
 
 MUX32 MUX_ALUSrc(
-    .data1_i    (read_data2_EX),
+    .data1_i    (MUX_ForwardB_out),
     .data2_i    (imm_gen_wire_EX),
     .select_i   (ALUSrc_EX),
     .data_o     (mux_wire)
+);
+
+
+Forwarding_Unit Forwarding_Unit(
+    .clk_i (clk_i),
+    .EX_rs1_i (ins_EX[19:15]),
+    .EX_rs2_i (ins_EX[24:20]),
+    .MEM_RegWrite_i (RegWrite_MEM),
+    .MEM_Rd_i (ins_MEM[11:7]),
+    .WB_RegWrite_i (RegWrite_WB),
+    .WB_Rd_i (ins_WB[11:7]),
+    .ForwardA_o (Forward_A),
+    .ForwardB_o (Forward_B)
 );
 
 
@@ -155,7 +186,7 @@ Imm_Gen Imm_Gen(
 
 
 ALU ALU(
-    .data1_i    (read_data1_EX),
+    .data1_i    (MUX_ForwardA_out),
     .data2_i    (mux_wire),
     .ALUCtrl_i  (ALU_control_wire),
     .data_o     (ALU_result),
