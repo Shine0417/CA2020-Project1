@@ -86,7 +86,7 @@ Pipeline_Register #(.n(71)) MEM_WB (
     .data_i     ({RegWrite_MEM, MemtoReg_MEM, ALU_result_MEM, data_memory_output, ins_MEM[11:7]}),
     .pc_o 		(),
     .data_o     ({RegWrite_WB, MemtoReg_WB, ALU_result_WB, data_memory_output_WB, ins_WB[11:7]})
-
+);
 
 Control Control(
     .Op_i           (ins_ID[6:0]),
