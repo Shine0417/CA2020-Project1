@@ -12,6 +12,7 @@ module Control
 // just testing
 // Interface
 input   [6:0]      Op_i;
+input			   NoOp_i;
 output             RegWrite_o;
 output             MemtoReg_o;
 output             MemRead_o;
@@ -37,7 +38,12 @@ always @(*) begin
     Branch_o = 0;
     RegWrite_o = 1;
 
-    if(Op_i == 7'b0110011) //R-type
+    if (NoOp_i == 1) begin
+    	RegWrite_o = 0;
+    	ALUOp_o = 0;
+    	ALUSrc_o = 0;
+    end
+    else if(Op_i == 7'b0110011) //R-type
     begin
         ALUOp_o = 2'b10;
         ALUSrc_o = 0;
@@ -62,10 +68,8 @@ always @(*) begin
         MemWrite_o = 1;
         RegWrite_o = 0;
     end
-    // else if(Op_i == 7'0000011)// beq
-    // begin
-    //     ALU
-    // end
+    else if(Op_i == 7'b0000011)// beq
+	    Branch_o = 1;	
     else
     begin
         ALUOp_o = 2;
