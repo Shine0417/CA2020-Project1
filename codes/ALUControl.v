@@ -1,7 +1,7 @@
 module ALU_Control
 (
-    funct_i    ,
-    ALUOp_i    ,
+    funct_i,
+    ALUOp_i,
     ALUCtrl_o  
 );
 
