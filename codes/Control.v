@@ -1,6 +1,7 @@
 module Control
 (
     Op_i       ,
+    NoOp_i,
     RegWrite_o ,
     MemtoReg_o   ,
     MemRead_o    ,
@@ -68,8 +69,13 @@ always @(*) begin
         MemWrite_o = 1;
         RegWrite_o = 0;
     end
-    else if(Op_i == 7'b0000011)// beq
-	    Branch_o = 1;	
+    else if(Op_i == 7'b1100011)// beq
+    begin
+    	ALUOp_o = 2'b01;
+    	ALUSrc_o = 0;
+	    Branch_o = 1;
+	    RegWrite_o = 0;
+	end
     else
     begin
         ALUOp_o = 2;

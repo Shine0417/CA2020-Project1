@@ -15,6 +15,8 @@ module ALU_Control
 `define srai  3'b101
 `define lw    3'b010
 `define sw    3'b010
+`define beq   
+
 // Interface
 input   [9:0]      funct_i;
 input   [1:0]      ALUOp_i;

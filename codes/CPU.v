@@ -97,6 +97,7 @@ Pipeline_Register #(.n(98)) MEM_WB (
 
 Control Control(
     .Op_i           (ins_ID[6:0]),
+    .NoOp_i         (NoOp),
     .RegWrite_o     (RegWrite),
     .MemtoReg_o     (MemtoReg),
     .MemRead_o      (MemRead),
@@ -119,7 +120,7 @@ PC PC(
     .rst_i          (rst_i),
     .start_i        (start_i),
     .PCWrite_i      (PCWrite),
-    .pc_i           (new_address),
+    .pc_i           (PCSrc_address),
     .pc_o           (address)
 );
 
@@ -158,6 +159,7 @@ MUX_Forwarding MUX_ForwardB(
     .Forward_i 	(Forward_B),
     .data_o 	(MUX_ForwardB_out)
 );
+
 
 MUX32 MUX_ALUSrc(
     .data1_i    (MUX_ForwardB_out),
