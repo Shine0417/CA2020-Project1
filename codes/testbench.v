@@ -43,10 +43,7 @@ initial begin
     // [RegisterInitialization] DO NOT REMOVE THIS FLAG !!!
 
     // TODO: initialize your pipeline registers
-    CPU.IF_ID.data_o = 0;
-    CPU.ID_EX.data_o = 0;
-    CPU.EX_MEM.data_o = 0;
-    CPU.MEM_WB.data_o = 0;
+    // Initialize pipeline in Pipeline_Register.v
     
     // Load instructions into instruction memory
     // Make sure you change back to "instruction.txt" before submission
@@ -56,10 +53,6 @@ initial begin
     // Make sure you change back to "output.txt" before submission
     outfile = $fopen("output.txt") | 1;
     
-    $fdisplay(outfile, "Pipeline Register IF_ID: %b", CPU.IF_ID.data_o);
-    $fdisplay(outfile, "Pipeline Register ID_EX: %b", CPU.ID_EX.data_o);
-    $fdisplay(outfile, "Pipeline Register EX_MEM: %b", CPU.EX_MEM.data_o);
-    $fdisplay(outfile, "Pipeline Register MEM_WB: %b", CPU.MEM_WB.data_o);
     Clk = 1;
     Reset = 1;
     Start = 0;
@@ -76,8 +69,8 @@ always@(posedge Clk) begin
         $finish;
 
     // put in your own signal to count stall and flush
-    // if(CPU.Hazard_Detection.Stall_o == 1 && CPU.Control.Branch_o == 0)stall = stall + 1; comment out temperally due to not use
-    // if(CPU.Flush == 1)flush = flush + 1;  
+    if(CPU.Hazard_Detection.Stall_o == 1 && CPU.Control.Branch_o == 0)stall = stall + 1;
+    if(CPU.Flush == 1)flush = flush + 1;  
 
     // print PC
     // DO NOT CHANGE THE OUTPUT FORMAT
@@ -107,12 +100,7 @@ always@(posedge Clk) begin
     $fdisplay(outfile, "Data Memory: 0x1C = %10d", CPU.Data_Memory.memory[7]);
 
     $fdisplay(outfile, "\n");
-    $fdisplay(outfile, "Pipeline Register IF_ID: %b", CPU.IF_ID.data_o);
-    $fdisplay(outfile, "Pipeline Register ID_EX: %b", CPU.ID_EX.data_o);
-    $fdisplay(outfile, "Pipeline Register EX_MEM: %b", CPU.EX_MEM.data_o);
-    $fdisplay(outfile, "Pipeline Register MEM_WB: %b", CPU.MEM_WB.data_o);
-
-
+    
     counter = counter + 1;
     
       
