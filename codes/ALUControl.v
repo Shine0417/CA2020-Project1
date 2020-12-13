@@ -1,7 +1,7 @@
 module ALU_Control
 (
-    funct_i    ,
-    ALUOp_i    ,
+    funct_i,
+    ALUOp_i,
     ALUCtrl_o  
 );
 
@@ -22,34 +22,32 @@ input   [9:0]      funct_i;
 input   [1:0]      ALUOp_i;
 output  [2:0]      ALUCtrl_o;
 
-reg [2:0]      ALUCtrl_o;
+reg     [2:0]      ALUCtrl_o;
+
 // Control
 always @(*) begin
-    if(ALUOp_i == 2'b11)
-        begin
-            case(funct_i[2:0])
-                `addi: ALUCtrl_o = 6;
-                `srai: ALUCtrl_o = 7;
-            endcase
-        end
-    else if(ALUOp_i == 2'b10)
-        begin
-            case(funct_i)
-                `AND: ALUCtrl_o = 0;
-                `XOR: ALUCtrl_o = 1;
-                `sll: ALUCtrl_o = 2;
-                `add: ALUCtrl_o = 3;
-                `sub: ALUCtrl_o = 4;
-                `mul: ALUCtrl_o = 5;
-            endcase
-        end
-    else if(ALUOp_i == 2'b00)
-        begin
-            case(funct_i[2:0])
-                `lw: ALUCtrl_o = 3;
-                `sw: ALUCtrl_o = 3;
-            endcase
-        end
+    if(ALUOp_i == 2'b11) begin
+        case(funct_i[2:0])
+            `addi: ALUCtrl_o = 6;
+            `srai: ALUCtrl_o = 7;
+        endcase
+    end
+    else if(ALUOp_i == 2'b10) begin
+        case(funct_i)
+            `AND: ALUCtrl_o = 0;
+            `XOR: ALUCtrl_o = 1;
+            `sll: ALUCtrl_o = 2;
+            `add: ALUCtrl_o = 3;
+            `sub: ALUCtrl_o = 4;
+            `mul: ALUCtrl_o = 5;
+        endcase
+    end
+    else if(ALUOp_i == 2'b00) begin
+        case(funct_i[2:0])
+            `lw: ALUCtrl_o = 3;
+            `sw: ALUCtrl_o = 3;
+        endcase
+    end
 end
 
 endmodule

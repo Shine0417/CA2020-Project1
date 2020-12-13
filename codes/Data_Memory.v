@@ -17,10 +17,8 @@ input   [31:0]      data_i;
 output  [31:0]      data_o;
 
 // data memory
-reg     [31:0]     memory  [0:1023];
+reg     [31:0]      memory  [0:1023];
 
-// tmp
-reg     [63:0]     tmp;
 
 assign  data_o = MemRead_i? memory[addr_i >> 2] : 0;
 

@@ -10,15 +10,16 @@ module Pipeline_Register
     data_o
 );
 
-input 				    clk_i, start_i;
-input  				    stall_i, flush_i;
-input 	[ 31:0]		pc_i;
-input 	[n-1:0] 	data_i;
-output 	[ 31:0]  	pc_o;
-output 	[n-1:0] 	data_o;
+input                clk_i, start_i;
+input  				       stall_i, flush_i;
+input 	[ 31:0]      pc_i;
+input 	[n-1:0]      data_i;
+output 	[ 31:0]      pc_o;
+output 	[n-1:0] 	   data_o;
 
-reg 	  [n-1:0] 	data_o;
-reg     [ 31:0]		pc_o;
+reg 	  [n-1:0]      data_o;
+reg     [ 31:0]		   pc_o;
+
 parameter n = 1;
 
 
@@ -36,6 +37,5 @@ always @(posedge clk_i) begin
 
     pc_o <= pc_i;
 end
-
 
 endmodule

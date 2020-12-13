@@ -10,9 +10,9 @@ module Hazard_Detection
 	NoOp_o
 );
 
-input 	[4:0]	RDaddr_EX_i, RS1addr_ID_i, RS2addr_ID_i;
-input  		 	RegWrite_EX_i, MemRead_EX_i;
-output 		 	PCWrite_o, Stall_o, NoOp_o;
+input	[4:0]       RDaddr_EX_i, RS1addr_ID_i, RS2addr_ID_i;
+input			   	RegWrite_EX_i, MemRead_EX_i;
+output				PCWrite_o, Stall_o, NoOp_o;
 
 reg    		  	PCWrite_o, Stall_o, NoOp_o;
 
