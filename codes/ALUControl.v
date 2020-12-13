@@ -2,7 +2,7 @@ module ALU_Control
 (
     funct_i,
     ALUOp_i,
-    ALUCtrl_o  
+    ALUCtrl_o
 );
 
 `define AND  10'b0000000_111
@@ -15,7 +15,6 @@ module ALU_Control
 `define srai  3'b101
 `define lw    3'b010
 `define sw    3'b010
-`define beq   
 
 // Interface
 input   [9:0]      funct_i;

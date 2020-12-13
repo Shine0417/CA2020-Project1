@@ -40,25 +40,25 @@ wire    [ 1:0]      Forward_A , Forward_B;
 wire    [31:0]      MUX_ForwardA_out , MUX_ForwardB_out;
 
 // Branch & Hazard Detection
-wire 		         Branch;
-wire 		         RS1eqRS2;
-wire		         PCWrite;
-wire 		         Stall;
-wire 		         NoOp;
-wire 		         Flush;
+wire                Branch;
+wire                RS1eqRS2;
+wire                PCWrite;
+wire                Stall;
+wire                NoOp;
+wire                Flush;
 
 //=====================================================================//
 //============================== Modules ==============================//
 //=====================================================================//
 
 Pipeline_Register #(.n(32)) IF_ID (
-    .clk_i     	(clk_i),
+    .clk_i      (clk_i),
     .start_i    (start_i),
-    .stall_i	(Stall),
-    .flush_i	(Flush),
-    .pc_i 		(address),
+    .stall_i    (Stall),
+    .flush_i    (Flush),
+    .pc_i       (address),
     .data_i     (ins),
-    .pc_o 		(address_ID),
+    .pc_o       (address_ID),
     .data_o     (ins_ID)
 );
 
@@ -66,11 +66,11 @@ Pipeline_Register #(.n(32)) IF_ID (
 Pipeline_Register #(.n(135)) ID_EX (
     .clk_i      (clk_i),
     .start_i    (start_i),
-    .stall_i 	(1'bx),
-    .flush_i 	(1'bx),
-    .pc_i 		(32'bx),	
+    .stall_i    (1'bx),
+    .flush_i    (1'bx),
+    .pc_i       (32'bx),
     .data_i     ({RegWrite, MemtoReg, MemRead, MemWrite, ALUOp, ALUSrc, read_data1, read_data2, imm_gen_wire, ins_ID}),
-    .pc_o 		(),
+    .pc_o       (),
     .data_o     ({RegWrite_EX, MemtoReg_EX, MemRead_EX, MemWrite_EX, ALUOp_EX, ALUSrc_EX, read_data1_EX, read_data2_EX, imm_gen_wire_EX, ins_EX})
 );
 
@@ -82,7 +82,7 @@ Pipeline_Register #(.n(100)) EX_MEM (
     .flush_i        (1'bx),
     .pc_i           (32'bx),
     .data_i         ({RegWrite_EX, MemtoReg_EX, MemRead_EX, MemWrite_EX, ALU_result, MUX_ForwardB_out, ins_EX}),
-    .pc_o 		    (),
+    .pc_o           (),
     .data_o         ({RegWrite_MEM, MemtoReg_MEM, MemRead_MEM, MemWrite_MEM, ALU_result_MEM, read_data2_MEM, ins_MEM})
 );
 
@@ -94,7 +94,7 @@ Pipeline_Register #(.n(98)) MEM_WB (
     .flush_i        (1'bx),
     .pc_i           (32'bx),
     .data_i         ({RegWrite_MEM, MemtoReg_MEM, ALU_result_MEM, data_memory_output, ins_MEM}),
-    .pc_o 		    (),
+    .pc_o           (),
     .data_o         ({RegWrite_WB, MemtoReg_WB, ALU_result_WB, data_memory_output_WB, ins_WB})
 );
 
@@ -105,7 +105,7 @@ Control Control(
     .RegWrite_o     (RegWrite),
     .MemtoReg_o     (MemtoReg),
     .MemRead_o      (MemRead),
-    .MemWrite_o  	(MemWrite),
+    .MemWrite_o     (MemWrite),
     .ALUOp_o        (ALUOp),
     .ALUSrc_o       (ALUSrc),
     .Branch_o       (Branch)
@@ -174,15 +174,15 @@ MUX32 MUX_ALUSrc(
 
 
 Forwarding_Unit Forwarding_Unit(
-    .clk_i 			(clk_i),
-    .EX_rs1_i 		(ins_EX[19:15]),
-    .EX_rs2_i 		(ins_EX[24:20]),
+    .clk_i          (clk_i),
+    .EX_rs1_i       (ins_EX[19:15]),
+    .EX_rs2_i       (ins_EX[24:20]),
     .MEM_RegWrite_i (RegWrite_MEM),
-    .MEM_Rd_i 		(ins_MEM[11:7]),
+    .MEM_Rd_i       (ins_MEM[11:7]),
     .WB_RegWrite_i  (RegWrite_WB),
-    .WB_Rd_i 		(ins_WB[11:7]),
-    .ForwardA_o 	(Forward_A),
-    .ForwardB_o 	(Forward_B)
+    .WB_Rd_i        (ins_WB[11:7]),
+    .ForwardA_o     (Forward_A),
+    .ForwardB_o     (Forward_B)
 );
 
 
@@ -227,43 +227,43 @@ Data_Memory Data_Memory(
 
 
 Hazard_Detection Hazard_Detection(
-	.RDaddr_EX_i	(ins_EX[11:7]),
-	.RS1addr_ID_i 	(ins_ID[19:15]),
-	.RS2addr_ID_i  	(ins_ID[24:20]),
-	.RegWrite_EX_i	(RegWrite_EX), 
-	.MemRead_EX_i	(MemRead_EX),
-	.PCWrite_o		(PCWrite),
-    .Stall_o		(Stall),
-    .NoOp_o			(NoOp)
+    .RDaddr_EX_i    (ins_EX[11:7]),
+    .RS1addr_ID_i   (ins_ID[19:15]),
+    .RS2addr_ID_i   (ins_ID[24:20]),
+    .RegWrite_EX_i  (RegWrite_EX), 
+    .MemRead_EX_i   (MemRead_EX),
+    .PCWrite_o      (PCWrite),
+    .Stall_o        (Stall),
+    .NoOp_o         (NoOp)
 );
 
 
 Equal Equality_Compare(
-	.data1_i 		(read_data1),
-	.data2_i 		(read_data2),
-	.result_o		(RS1eqRS2)
+    .data1_i        (read_data1),
+    .data2_i        (read_data2),
+    .result_o       (RS1eqRS2)
 );
 
 
 AND #(.n(1)) AND_Branch_Equality(
-	.data1_i 		(Branch),
-	.data2_i		(RS1eqRS2),
-	.data_o			(Flush)
+    .data1_i       (Branch),
+    .data2_i       (RS1eqRS2),
+    .data_o        (Flush)
 );
 
 
 Adder Add_PC_Imm(
-	.data1_in		(imm_gen_wire << 1),
-	.data2_in		(address_ID),
-	.data_o 		(branch_address)
+    .data1_in       (imm_gen_wire << 1),
+    .data2_in       (address_ID),
+    .data_o         (branch_address)
 );
 
 
 MUX32 MUX_PCSrc(
-	.data1_i    	(new_address),
-    .data2_i    	(branch_address),
-    .select_i   	(Flush),
-    .data_o     	(PCSrc_address)
+    .data1_i        (new_address),
+    .data2_i        (branch_address),
+    .select_i       (Flush),
+    .data_o         (PCSrc_address)
 );
 
 

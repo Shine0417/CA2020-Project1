@@ -11,14 +11,14 @@ module Pipeline_Register
 );
 
 input                clk_i, start_i;
-input  				       stall_i, flush_i;
-input 	[ 31:0]      pc_i;
-input 	[n-1:0]      data_i;
-output 	[ 31:0]      pc_o;
-output 	[n-1:0] 	   data_o;
+input                stall_i, flush_i;
+input   [ 31:0]      pc_i;
+input   [n-1:0]      data_i;
+output  [ 31:0]      pc_o;
+output  [n-1:0]      data_o;
 
-reg 	  [n-1:0]      data_o;
-reg     [ 31:0]		   pc_o;
+reg     [n-1:0]      data_o;
+reg     [ 31:0]     pc_o;
 
 parameter n = 1;
 
@@ -29,7 +29,7 @@ end
 
 always @(posedge clk_i) begin
     if (flush_i == 1)
-		    data_o <= 0;
+        data_o <= 0;
     else if (stall_i == 1)
         data_o <= data_o;
     else

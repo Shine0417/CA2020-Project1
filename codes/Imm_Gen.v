@@ -1,13 +1,13 @@
 module Imm_Gen
 (
     data_i,
-    data_o     
+    data_o
 );
 
-input   [31:0]  	data_i;
-output  [31:0]  	data_o;
+input   [31:0]      data_i;
+output  [31:0]      data_o;
 
-reg     [31:0]  	data_o;
+reg     [31:0]      data_o;
 
 `define sw 7'b0100011
 `define beq 7'b1100011
